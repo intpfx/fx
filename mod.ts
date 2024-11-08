@@ -1,6 +1,4 @@
 let IS_DEV = Deno.env.get("DENO_REGION") ? false : true;
-let PORT = 8000;
-let LOOP_FLAG = true;
 let INDEX = "";
 let MAIN_JS = "";
 
@@ -154,39 +152,19 @@ roadmap.mark("main.js", (messages) => {
   return new Response(MAIN_JS, { headers });
 });
 
-while (LOOP_FLAG) {
-  try {
-    Deno.serve({
-      port: PORT,
-      onListen: () => {
-        if (IS_DEV) {
-          console.log(`Server is running on http://localhost:${PORT}`);
-          LOOP_FLAG = false;
-        }
-      },
-    }, (request) => {
-      const url = new URL(request.url);
-      const pathArray = url.pathname.split("/");
-      const headers = new Headers();
-      const handler = roadmap.get(pathArray[1]);
-      const messages = {
-        request: request,
-        headers: headers,
-      };
-      if (handler) {
-        return handler(messages);
-      } else {
-        headers.set("Content-Type", "text/html");
-        return new Response("404 Not Found", { headers, status: 404 });
-      }
-    });
-    // deno-lint-ignore no-explicit-any
-  } catch (error: any) {
-    switch (error.name) {
-      case "AddrInUse": {
-        PORT++;
-        break;
-      }
-    }
+Deno.serve((request) => {
+  const url = new URL(request.url);
+  const pathArray = url.pathname.split("/");
+  const headers = new Headers();
+  const handler = roadmap.get(pathArray[1]);
+  const messages = {
+    request: request,
+    headers: headers,
+  };
+  if (handler) {
+    return handler(messages);
+  } else {
+    headers.set("Content-Type", "text/html");
+    return new Response("404 Not Found", { headers, status: 404 });
   }
-}
+});
