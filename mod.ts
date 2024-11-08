@@ -81,7 +81,7 @@ const hmr_dev = () => {
   }
 };
 
-export const roadmap = new Roadmap();
+export const roadmap: Roadmap = new Roadmap();
 roadmap.mark("", (messages) => {
   const { headers } = messages;
   headers.set("Content-Type", "text/html");
