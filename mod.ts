@@ -1,17 +1,8 @@
 let IS_DEV = Deno.env.get("DENO_REGION") ? false : true;
 let PORT = 8000;
 let LOOP_FLAG = true;
-let INDEX = /*html*/ `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>I am title</title>
-  </head>
-  <body></body>
-  <script type="module" src="/main.js"></script>
-  <dev-inject />
-</html>`;
-let MAIN_JS = 'console.log("This is JS entrance.")';
+let INDEX = "";
+let MAIN_JS = "";
 
 interface Handler {
   (messages: { request: Request; headers: Headers }): Response;
@@ -36,18 +27,79 @@ export function STDM() {
 /**
  * Custom Index HTML
  */
-export function CI({ title } = { title: "I am title" }) {
+export function CI(
+  {
+    charset,
+    keywords,
+    description,
+    author,
+    robots,
+    title,
+    icon,
+    icon_png,
+    manifest,
+  } = {
+    charset: "UTF-8",
+    keywords: "keywords",
+    description: "description",
+    author: "author",
+    robots: "index, follow",
+    title: "I am title",
+    icon: "",
+    icon_png: "",
+    manifest: "",
+  },
+) {
   INDEX = /*html*/ `
   <!DOCTYPE html>
   <html>
     <head>
+      <meta charset=${charset}>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="format-detection" content="telephone=no">
+      <meta name="keywords" content=${keywords}>
+      <meta name="description" content=${description}>
+      <meta name="author" content=${author}>
+      <meta name="robots" content=${robots}>
+      <meta name="start_url" content="/">
       <title>${title}</title>
+      ${
+    icon ? /*html*/ `<link rel="icon" type="image/svg+xml" href=${icon}>` : ""
+  }
+      ${
+    icon_png
+      ? /*html*/ `<link rel="apple-touch-icon" type="image/png" href=${icon_png}>`
+      : ""
+  }
+      ${icon ? /*html*/ `<link rel="mask-icon" href=${icon} color="#000">` : ""}
+      ${
+    icon_png
+      ? /*html*/ `<link rel="fluid-icon" href=${icon_png} title="title">`
+      : ""
+  }
+      ${
+    icon
+      ? /*html*/ `<link rel="shortcut icon" type="image/svg+xml" href=${icon}>`
+      : ""
+  }
+      ${
+    icon_png
+      ? /*html*/ `<link rel="apple-touch-startup-image" type="image/png" href=${icon_png}>`
+      : ""
+  }
+      ${
+    manifest
+      ? /*html*/ `<link rel="manifest" type="application/manifest+json" href=${manifest}>`
+      : ""
+  }
     </head>
     <body></body>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="main.js"></script>
     <dev-inject />
   </html>`;
 }
+CI();
 
 /**
  * Custom Main JavaScript
@@ -59,6 +111,7 @@ export function CMJS(main: () => void = () => {
   const context = main.toString();
   MAIN_JS = context.slice(context.indexOf("{") + 1, context.lastIndexOf("}"));
 }
+CMJS();
 
 const hmr_dev = () => {
   if (IS_DEV) {
