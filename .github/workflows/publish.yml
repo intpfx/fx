@@ -1,0 +1,28 @@
+name: Publish
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Deno
+        run: |
+          curl -fsSL https://deno.land/x/install/install.sh | sh
+          echo "DENO_INSTALL=/home/runner/.deno" >> $GITHUB_ENV
+          echo "PATH=\$DENO_INSTALL/bin:\$PATH" >> $GITHUB_ENV
+
+      - name: Publish package
+        env:
+          DENO_INSTALL: /home/runner/.deno
+          PATH: /home/runner/.deno/bin:$PATH
+        run: deno publish
