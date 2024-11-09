@@ -4,6 +4,7 @@
 
 ```javascript
 import { CI, CMJS, roadmap, STDM } from "jsr:@intpfx/fx";
+// import { CI, CMJS, roadmap, STDM } from "npm:@intpfx/fx";
 
 // 强制转换至部署模式，会取消HMR功能的注入，主要用于非Deno Deploy环境部署时使用
 STDM();

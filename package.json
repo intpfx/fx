@@ -1,0 +1,20 @@
+{
+  "name": "@intpfx/fx",
+  "type": "module",
+  "version": "0.0.5",
+  "description": "An extremely simple rapid development kit. 一个极其简单的快速开发套件。",
+  "author": "intpfx",
+  "license": "MIT",
+  "main": "mod.ts",
+  "keywords": [
+    "simple",
+    "kit"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intpfx/fx.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
